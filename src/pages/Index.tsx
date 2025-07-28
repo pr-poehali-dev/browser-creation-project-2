@@ -1,10 +1,10 @@
-import React, { useState, useRef, useEffect } from 'react';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Card } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { Switch } from '@/components/ui/switch';
-import Icon from '@/components/ui/icon';
+import React, { useState, useRef, useEffect } from "react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Card } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Switch } from "@/components/ui/switch";
+import Icon from "@/components/ui/icon";
 
 interface Tab {
   id: string;
@@ -23,10 +23,10 @@ interface PrivacyStats {
 
 export default function Index() {
   const [tabs, setTabs] = useState<Tab[]>([
-    { id: '1', title: 'Новая вкладка', url: 'about:blank', isActive: true }
+    { id: "1", title: "Новая вкладка", url: "about:blank", isActive: true },
   ]);
-  
-  const [urlInput, setUrlInput] = useState('');
+
+  const [urlInput, setUrlInput] = useState("");
   const [isVpnActive, setIsVpnActive] = useState(false);
   const [isIncognitoMode, setIsIncognitoMode] = useState(false);
   const [isListening, setIsListening] = useState(false);
@@ -35,27 +35,27 @@ export default function Index() {
     trackersBlocked: 0,
     adsBlocked: 0,
     cookiesBlocked: 0,
-    fingerprintingBlocked: 0
+    fingerprintingBlocked: 0,
   });
   const [isTrackerBlocking, setIsTrackerBlocking] = useState(true);
   const [isAdBlocking, setIsAdBlocking] = useState(true);
   const [isDnsOverHttps, setIsDnsOverHttps] = useState(true);
   const [autoDeleteData, setAutoDeleteData] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
-  
+
   const mockSuggestions = [
-    'поехали.dev - создание сайтов',
-    'poehali.dev документация', 
-    'поиск в Google',
-    'YouTube - видео',
-    'GitHub - репозитории'
+    "поехали.dev - создание сайтов",
+    "poehali.dev документация",
+    "поиск в Google",
+    "YouTube - видео",
+    "GitHub - репозитории",
   ];
 
   const handleUrlChange = (value: string) => {
     setUrlInput(value);
     if (value.length > 2) {
-      const filtered = mockSuggestions.filter(suggestion => 
-        suggestion.toLowerCase().includes(value.toLowerCase())
+      const filtered = mockSuggestions.filter((suggestion) =>
+        suggestion.toLowerCase().includes(value.toLowerCase()),
       );
       setSearchSuggestions(filtered.slice(0, 5));
     } else {
@@ -65,111 +65,122 @@ export default function Index() {
 
   const simulatePrivacyBlocking = () => {
     if (isTrackerBlocking) {
-      setPrivacyStats(prev => ({
+      setPrivacyStats((prev) => ({
         ...prev,
-        trackersBlocked: prev.trackersBlocked + Math.floor(Math.random() * 5) + 1,
-        fingerprintingBlocked: prev.fingerprintingBlocked + Math.floor(Math.random() * 3)
+        trackersBlocked:
+          prev.trackersBlocked + Math.floor(Math.random() * 5) + 1,
+        fingerprintingBlocked:
+          prev.fingerprintingBlocked + Math.floor(Math.random() * 3),
       }));
     }
     if (isAdBlocking) {
-      setPrivacyStats(prev => ({
+      setPrivacyStats((prev) => ({
         ...prev,
-        adsBlocked: prev.adsBlocked + Math.floor(Math.random() * 8) + 2
+        adsBlocked: prev.adsBlocked + Math.floor(Math.random() * 8) + 2,
       }));
     }
-    setPrivacyStats(prev => ({
+    setPrivacyStats((prev) => ({
       ...prev,
-      cookiesBlocked: prev.cookiesBlocked + Math.floor(Math.random() * 4) + 1
+      cookiesBlocked: prev.cookiesBlocked + Math.floor(Math.random() * 4) + 1,
     }));
   };
 
   const navigateToUrl = (url?: string) => {
     const targetUrl = url || urlInput;
     if (!targetUrl) return;
-    
+
     let finalUrl = targetUrl;
-    if (!targetUrl.startsWith('http://') && !targetUrl.startsWith('https://')) {
-      if (targetUrl.includes(' ') || !targetUrl.includes('.')) {
+    if (!targetUrl.startsWith("http://") && !targetUrl.startsWith("https://")) {
+      if (targetUrl.includes(" ") || !targetUrl.includes(".")) {
         finalUrl = `https://www.google.com/search?q=${encodeURIComponent(targetUrl)}`;
       } else {
         finalUrl = `https://${targetUrl}`;
       }
     }
-    
+
     // Симулируем блокировку при загрузке страницы
     setTimeout(simulatePrivacyBlocking, 1000);
-    
-    const activeTab = tabs.find(tab => tab.isActive);
+
+    const activeTab = tabs.find((tab) => tab.isActive);
     if (activeTab) {
-      setTabs(tabs.map(tab => 
-        tab.id === activeTab.id 
-          ? { ...tab, url: finalUrl, title: getDomainFromUrl(finalUrl) }
-          : tab
-      ));
+      setTabs(
+        tabs.map((tab) =>
+          tab.id === activeTab.id
+            ? { ...tab, url: finalUrl, title: getDomainFromUrl(finalUrl) }
+            : tab,
+        ),
+      );
     }
     setSearchSuggestions([]);
   };
 
   const getDomainFromUrl = (url: string) => {
     try {
-      const domain = new URL(url).hostname.replace('www.', '');
+      const domain = new URL(url).hostname.replace("www.", "");
       return domain.charAt(0).toUpperCase() + domain.slice(1);
     } catch {
-      return 'Новая страница';
+      return "Новая страница";
     }
   };
 
   const addNewTab = () => {
     const newTab: Tab = {
       id: Date.now().toString(),
-      title: 'Новая вкладка',
-      url: 'about:blank',
+      title: "Новая вкладка",
+      url: "about:blank",
       isActive: false,
-      isIncognito: isIncognitoMode
+      isIncognito: isIncognitoMode,
     };
-    
+
     setTabs([
-      ...tabs.map(tab => ({ ...tab, isActive: false })),
-      { ...newTab, isActive: true }
+      ...tabs.map((tab) => ({ ...tab, isActive: false })),
+      { ...newTab, isActive: true },
     ]);
-    setUrlInput('');
+    setUrlInput("");
   };
 
   const closeTab = (tabId: string) => {
     if (tabs.length === 1) return;
-    
-    const updatedTabs = tabs.filter(tab => tab.id !== tabId);
-    const closedTabWasActive = tabs.find(tab => tab.id === tabId)?.isActive;
-    
+
+    const updatedTabs = tabs.filter((tab) => tab.id !== tabId);
+    const closedTabWasActive = tabs.find((tab) => tab.id === tabId)?.isActive;
+
     if (closedTabWasActive && updatedTabs.length > 0) {
       updatedTabs[0].isActive = true;
     }
-    
+
     setTabs(updatedTabs);
   };
 
   const switchTab = (tabId: string) => {
-    setTabs(tabs.map(tab => ({
-      ...tab,
-      isActive: tab.id === tabId
-    })));
+    setTabs(
+      tabs.map((tab) => ({
+        ...tab,
+        isActive: tab.id === tabId,
+      })),
+    );
   };
 
   const startVoiceSearch = () => {
-    if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
-      alert('Голосовой поиск не поддерживается в этом браузере');
+    if (
+      !("webkitSpeechRecognition" in window) &&
+      !("SpeechRecognition" in window)
+    ) {
+      alert("Голосовой поиск не поддерживается в этом браузере");
       return;
     }
 
-    const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
+    const SpeechRecognition =
+      (window as any).SpeechRecognition ||
+      (window as any).webkitSpeechRecognition;
     const recognition = new SpeechRecognition();
-    
-    recognition.lang = 'ru-RU';
+
+    recognition.lang = "ru-RU";
     recognition.continuous = false;
     recognition.interimResults = false;
 
     setIsListening(true);
-    
+
     recognition.onresult = (event: any) => {
       const transcript = event.results[0][0].transcript;
       setUrlInput(transcript);
@@ -188,7 +199,7 @@ export default function Index() {
     recognition.start();
   };
 
-  const activeTab = tabs.find(tab => tab.isActive);
+  const activeTab = tabs.find((tab) => tab.isActive);
 
   return (
     <div className="h-screen flex flex-col bg-gradient-to-br from-slate-50 to-slate-100">
@@ -201,11 +212,12 @@ export default function Index() {
               className={`
                 group flex items-center gap-2 px-4 py-2 rounded-t-lg cursor-pointer
                 transition-all duration-200 min-w-[180px] max-w-[250px]
-                ${tab.isActive 
-                  ? 'bg-white shadow-sm border-l border-r border-t border-slate-200' 
-                  : 'bg-slate-100/50 hover:bg-slate-100'
+                ${
+                  tab.isActive
+                    ? "bg-white shadow-sm border-l border-r border-t border-slate-200"
+                    : "bg-slate-100/50 hover:bg-slate-100"
                 }
-                ${tab.isIncognito ? 'bg-gradient-to-r from-slate-800 to-slate-700 text-white' : ''}
+                ${tab.isIncognito ? "bg-gradient-to-r from-slate-800 to-slate-700 text-white" : ""}
               `}
               onClick={() => switchTab(tab.id)}
             >
@@ -228,7 +240,7 @@ export default function Index() {
               )}
             </div>
           ))}
-          
+
           <Button
             variant="ghost"
             size="sm"
@@ -245,16 +257,20 @@ export default function Index() {
           <div className="flex items-center gap-2 px-3 py-1.5 bg-green-100 rounded-full border border-green-200">
             <Icon name="Shield" size={14} className="text-green-600" />
             <span className="text-xs font-medium text-green-700">
-              {privacyStats.trackersBlocked + privacyStats.adsBlocked} заблокировано
+              {privacyStats.trackersBlocked + privacyStats.adsBlocked}{" "}
+              заблокировано
             </span>
           </div>
           {isVpnActive && (
-            <Badge variant="secondary" className="bg-green-100 text-green-700 border-green-200">
+            <Badge
+              variant="secondary"
+              className="bg-green-100 text-green-700 border-green-200"
+            >
               <Icon name="Shield" size={12} className="mr-1" />
               VPN
             </Badge>
           )}
-          
+
           {isIncognitoMode && (
             <Badge variant="secondary" className="bg-slate-700 text-white">
               <Icon name="EyeOff" size={12} className="mr-1" />
@@ -286,27 +302,27 @@ export default function Index() {
               ref={inputRef}
               value={urlInput}
               onChange={(e) => handleUrlChange(e.target.value)}
-              onKeyPress={(e) => e.key === 'Enter' && navigateToUrl()}
+              onKeyPress={(e) => e.key === "Enter" && navigateToUrl()}
               placeholder="Поиск или введите URL..."
               className="pl-10 pr-20 h-11 bg-slate-100/80 border-slate-200 rounded-full focus:bg-white focus:ring-2 focus:ring-primary/20 transition-all"
             />
-            
-            <Icon 
-              name="Search" 
-              size={16} 
-              className="absolute left-3 top-3.5 text-slate-500" 
+
+            <Icon
+              name="Search"
+              size={16}
+              className="absolute left-3 top-3.5 text-slate-500"
             />
-            
+
             <div className="absolute right-2 top-2 flex gap-1">
               <Button
                 variant="ghost"
                 size="sm"
                 onClick={startVoiceSearch}
-                className={`h-7 w-7 p-0 rounded-full ${isListening ? 'bg-red-100 text-red-600' : ''}`}
+                className={`h-7 w-7 p-0 rounded-full ${isListening ? "bg-red-100 text-red-600" : ""}`}
               >
                 <Icon name="Mic" size={14} />
               </Button>
-              
+
               <Button
                 variant="ghost"
                 size="sm"
@@ -345,13 +361,28 @@ export default function Index() {
             variant="ghost"
             size="sm"
             className="h-9 px-3 bg-slate-100 hover:bg-slate-200 rounded-full"
-            onClick={() => alert('Настройки приватности:\n\n🛡️ Блокировка трекеров: ' + (isTrackerBlocking ? 'ВКЛ' : 'ВЫКЛ') + '\n🚫 Блокировка рекламы: ' + (isAdBlocking ? 'ВКЛ' : 'ВЫКЛ') + '\n🔒 DNS over HTTPS: ' + (isDnsOverHttps ? 'ВКЛ' : 'ВЫКЛ') + '\n🗑️ Автоудаление данных: ' + (autoDeleteData ? 'ВКЛ' : 'ВЫКЛ'))}
+            onClick={() =>
+              alert(
+                "Настройки приватности:\n\n🛡️ Блокировка трекеров: " +
+                  (isTrackerBlocking ? "ВКЛ" : "ВЫКЛ") +
+                  "\n🚫 Блокировка рекламы: " +
+                  (isAdBlocking ? "ВКЛ" : "ВЫКЛ") +
+                  "\n🔒 DNS over HTTPS: " +
+                  (isDnsOverHttps ? "ВКЛ" : "ВЫКЛ") +
+                  "\n🗑️ Автоудаление данных: " +
+                  (autoDeleteData ? "ВКЛ" : "ВЫКЛ"),
+              )
+            }
           >
             <Icon name="ShieldCheck" size={14} className="mr-1" />
             <span className="text-xs font-medium">Приватность</span>
           </Button>
           <div className="flex items-center gap-2 px-3 py-1.5 bg-slate-100 rounded-full">
-            <Icon name="Shield" size={14} className={isVpnActive ? 'text-green-600' : 'text-slate-400'} />
+            <Icon
+              name="Shield"
+              size={14}
+              className={isVpnActive ? "text-green-600" : "text-slate-400"}
+            />
             <span className="text-xs font-medium">VPN</span>
             <Switch
               checked={isVpnActive}
@@ -359,9 +390,13 @@ export default function Index() {
               className="scale-75"
             />
           </div>
-          
+
           <div className="flex items-center gap-2 px-3 py-1.5 bg-slate-100 rounded-full">
-            <Icon name="EyeOff" size={14} className={isIncognitoMode ? 'text-slate-700' : 'text-slate-400'} />
+            <Icon
+              name="EyeOff"
+              size={14}
+              className={isIncognitoMode ? "text-slate-700" : "text-slate-400"}
+            />
             <span className="text-xs font-medium">Инкогнито</span>
             <Switch
               checked={isIncognitoMode}
@@ -376,14 +411,18 @@ export default function Index() {
             size="sm"
             className="h-9 px-3 bg-red-100 hover:bg-red-200 rounded-full text-red-700"
             onClick={() => {
-              if (confirm('Очистить все данные о просмотре?\n\n• История посещений\n• Куки и кэш\n• Локальные данные\n• Пароли и формы')) {
+              if (
+                confirm(
+                  "Очистить все данные о просмотре?\n\n• История посещений\n• Куки и кэш\n• Локальные данные\n• Пароли и формы",
+                )
+              ) {
                 setPrivacyStats({
                   trackersBlocked: 0,
                   adsBlocked: 0,
                   cookiesBlocked: 0,
-                  fingerprintingBlocked: 0
+                  fingerprintingBlocked: 0,
                 });
-                alert('✅ Все данные удалены!');
+                alert("✅ Все данные удалены!");
               }
             }}
           >
@@ -400,13 +439,17 @@ export default function Index() {
       {/* Область контента */}
       <div className="flex-1 p-4">
         <Card className="h-full bg-white shadow-sm border-slate-200 overflow-hidden">
-          {activeTab?.url === 'about:blank' ? (
+          {activeTab?.url === "about:blank" ? (
             <div className="h-full flex flex-col items-center justify-center bg-gradient-to-br from-primary/5 to-accent/5">
               <div className="text-center space-y-6 max-w-md">
                 <div className="space-y-4">
                   <div className="text-center space-y-2">
                     <div className="flex items-center justify-center gap-2">
-                      <Icon name="ShieldCheck" size={28} className="text-green-600" />
+                      <Icon
+                        name="ShieldCheck"
+                        size={28}
+                        className="text-green-600"
+                      />
                       <h1 className="text-3xl font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
                         Приватный браузер
                       </h1>
@@ -415,60 +458,76 @@ export default function Index() {
                       Максимальная анонимность и защита данных
                     </p>
                   </div>
-                  
+
                   {/* Статистика приватности */}
                   <div className="grid grid-cols-2 gap-3 p-4 bg-white/70 rounded-xl border border-slate-200">
                     <div className="text-center">
-                      <div className="text-lg font-bold text-green-600">{privacyStats.trackersBlocked}</div>
-                      <div className="text-xs text-slate-600">Трекеров заблокировано</div>
+                      <div className="text-lg font-bold text-green-600">
+                        {privacyStats.trackersBlocked}
+                      </div>
+                      <div className="text-xs text-slate-600">
+                        Трекеров заблокировано
+                      </div>
                     </div>
                     <div className="text-center">
-                      <div className="text-lg font-bold text-blue-600">{privacyStats.adsBlocked}</div>
-                      <div className="text-xs text-slate-600">Рекламы заблокировано</div>
+                      <div className="text-lg font-bold text-blue-600">
+                        {privacyStats.adsBlocked}
+                      </div>
+                      <div className="text-xs text-slate-600">
+                        Рекламы заблокировано
+                      </div>
                     </div>
                     <div className="text-center">
-                      <div className="text-lg font-bold text-purple-600">{privacyStats.cookiesBlocked}</div>
-                      <div className="text-xs text-slate-600">Куков заблокировано</div>
+                      <div className="text-lg font-bold text-purple-600">
+                        {privacyStats.cookiesBlocked}
+                      </div>
+                      <div className="text-xs text-slate-600">
+                        Куков заблокировано
+                      </div>
                     </div>
                     <div className="text-center">
-                      <div className="text-lg font-bold text-orange-600">{privacyStats.fingerprintingBlocked}</div>
-                      <div className="text-xs text-slate-600">Отпечатков заблокировано</div>
+                      <div className="text-lg font-bold text-orange-600">
+                        {privacyStats.fingerprintingBlocked}
+                      </div>
+                      <div className="text-xs text-slate-600">
+                        Отпечатков заблокировано
+                      </div>
                     </div>
                   </div>
                 </div>
-                
+
                 <div className="grid grid-cols-2 gap-4 w-full">
                   <Button
                     variant="outline"
                     className="h-16 flex-col gap-2 bg-white/50 hover:bg-white/80"
-                    onClick={() => navigateToUrl('poehali.dev')}
+                    onClick={() => navigateToUrl("rocket.com")}
                   >
                     <Icon name="Rocket" size={20} />
-                    <span className="text-sm">poehali.dev</span>
+                    <span className="text-sm">Ракета</span>
                   </Button>
-                  
+
                   <Button
                     variant="outline"
                     className="h-16 flex-col gap-2 bg-white/50 hover:bg-white/80 hover:bg-gradient-to-r hover:from-blue-50 hover:to-cyan-50"
-                    onClick={() => window.open('https://t.me/+QgiLIa1gFRY4Y2Iy', '_blank')}
+                    onClick={() => window.open("https://t.me/", "_blank")}
                   >
                     <Icon name="Send" size={20} className="text-blue-500" />
                     <span className="text-sm">Telegram</span>
                   </Button>
-                  
+
                   <Button
                     variant="outline"
                     className="h-16 flex-col gap-2 bg-white/50 hover:bg-white/80"
-                    onClick={() => navigateToUrl('youtube.com')}
+                    onClick={() => navigateToUrl("youtube.com")}
                   >
                     <Icon name="Play" size={20} />
                     <span className="text-sm">YouTube</span>
                   </Button>
-                  
+
                   <Button
                     variant="outline"
                     className="h-16 flex-col gap-2 bg-white/50 hover:bg-white/80"
-                    onClick={() => navigateToUrl('github.com')}
+                    onClick={() => navigateToUrl("github.com")}
                   >
                     <Icon name="Github" size={20} />
                     <span className="text-sm">GitHub</span>
@@ -486,7 +545,11 @@ export default function Index() {
           ) : (
             <div className="h-full flex items-center justify-center bg-slate-50">
               <div className="text-center space-y-4">
-                <Icon name="Globe" size={48} className="text-slate-400 mx-auto" />
+                <Icon
+                  name="Globe"
+                  size={48}
+                  className="text-slate-400 mx-auto"
+                />
                 <div>
                   <h3 className="font-semibold text-slate-700">Загружается</h3>
                   <p className="text-sm text-slate-500">{activeTab?.url}</p>
