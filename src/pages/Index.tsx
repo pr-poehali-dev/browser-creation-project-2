@@ -346,11 +346,11 @@ export default function Index() {
                   
                   <Button
                     variant="outline"
-                    className="h-16 flex-col gap-2 bg-white/50 hover:bg-white/80"
-                    onClick={() => navigateToUrl('google.com')}
+                    className="h-16 flex-col gap-2 bg-white/50 hover:bg-white/80 hover:bg-gradient-to-r hover:from-blue-50 hover:to-cyan-50"
+                    onClick={() => window.open('https://t.me/+QgiLIa1gFRY4Y2Iy', '_blank')}
                   >
-                    <Icon name="Search" size={20} />
-                    <span className="text-sm">Google</span>
+                    <Icon name="Send" size={20} className="text-blue-500" />
+                    <span className="text-sm">Telegram</span>
                   </Button>
                   
                   <Button
